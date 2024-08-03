@@ -11,9 +11,7 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import { useSelector } from 'react-redux';
 
 const SideBar = () => {
-
-    
-
+    const location = useLocation(); // Hook to get the current path
     const { currentRole } = useSelector(state => state.user);
 
     return (
@@ -21,10 +19,10 @@ const SideBar = () => {
             <React.Fragment>
                 <ListItemButton
                     component={Link} to="/"
-                    sx={(location.pathname === "/" || location.pathname === "/Seller/dashboard") ? styles.currentStyle : styles.normalStyle}
+                    sx={location.pathname === "/" || location.pathname === "/Seller/dashboard" ? styles.currentStyle : styles.normalStyle}
                 >
                     <ListItemIcon>
-                        <WidgetsIcon sx={{ color: (location.pathname === "/" || location.pathname === "/Seller/dashboard") ? '#4d1c9c' : 'inherit' }} />
+                        <WidgetsIcon sx={{ color: location.pathname === "/" || location.pathname === "/Seller/dashboard" ? '#4d1c9c' : 'inherit' }} />
                     </ListItemIcon>
                     <ListItemText primary="Home" />
                 </ListItemButton>
@@ -38,6 +36,7 @@ const SideBar = () => {
                     </ListItemIcon>
                     <ListItemText primary="Products" />
                 </ListItemButton>
+
                 <ListItemButton
                     component={Link} to="/Seller/orders"
                     sx={location.pathname.startsWith('/Seller/orders') ? styles.currentStyle : styles.normalStyle}
@@ -47,8 +46,8 @@ const SideBar = () => {
                     </ListItemIcon>
                     <ListItemText primary="Orders" />
                 </ListItemButton>
-                {
-                    currentRole === "Shopcart" &&
+
+                {currentRole === "Shopcart" && (
                     <ListItemButton
                         component={Link} to="/Seller/shopcart"
                         sx={location.pathname.startsWith('/Seller/shopcart') ? styles.currentStyle : styles.normalStyle}
@@ -58,7 +57,7 @@ const SideBar = () => {
                         </ListItemIcon>
                         <ListItemText primary="Shopcart" />
                     </ListItemButton>
-                }
+                )}
             </React.Fragment>
             <Divider sx={{ my: 1 }} />
             <React.Fragment>
@@ -71,6 +70,7 @@ const SideBar = () => {
                     </ListItemIcon>
                     <ListItemText primary="Profile" />
                 </ListItemButton>
+
                 <ListItemButton
                     component={Link} to="/logout"
                     sx={location.pathname.startsWith('/logout') ? styles.currentStyle : styles.normalStyle}
@@ -80,7 +80,6 @@ const SideBar = () => {
                     </ListItemIcon>
                     <ListItemText primary="Logout" />
                 </ListItemButton>
-
             </React.Fragment>
         </>
     );

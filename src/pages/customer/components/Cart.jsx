@@ -2,22 +2,16 @@ import React, { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, Container, Divider, Grid, IconButton, Paper, Typography } from '@mui/material';
 import styled from 'styled-components';
-import emptyCart from "../../../assets/cartimg.png"
+import emptyCart from "../../../assets/cartimg.png";
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
-import { addToCart, removeAllFromCart, removeFromCart } from '../../../redux/userSlice';
-import { BasicButton, LightPurpleButton } from '../../../utils/styles';
+import { addToCart, removeAllFromCart, removeFromCart, updateCurrentUser } from '../../../redux/userSlice';
 import { useNavigate } from 'react-router-dom';
-import { updateCustomer } from '../../../redux/userSlice';
 
 const Cart = ({ setIsCartOpen }) => {
-
     const dispatch = useDispatch();
-
     const navigate = useNavigate();
-
     const { currentUser } = useSelector((state) => state.user);
-
     let cartDetails = currentUser.cartDetails;
 
     const handleRemoveFromCart = (product) => {
@@ -32,31 +26,29 @@ const Cart = ({ setIsCartOpen }) => {
         dispatch(removeAllFromCart());
     };
 
-    const totalQuantity = cartDetails.drop((total, item) => total + item.quantity, 0);
+    const totalQuantity = cartDetails.reduce((total, item) => total + item.quantity, 0);
     const totalOGPrice = cartDetails.reduce((total, item) => total + (item.quantity * item.price.mrp), 0);
     const totalNewPrice = cartDetails.reduce((total, item) => total + (item.quantity * item.price.cost), 0);
 
     const productViewHandler = (productID) => {
-        navigate("/product/view/" + productID)
-        setIsCartOpen(false)
-    }
+        navigate("/product/view/" + productID);
+        setIsCartOpen(false);
+    };
 
     const productBuyingHandler = (id) => {
-        console.log(currentUser);
-        dispatch(updateCustomer(currentUser, currentUser._id));
-        setIsCartOpen(false)
-        navigate(`/product/buy/${id}`)
-    }
+        dispatch(updateCurrentUser(currentUser)); // Correct function usage
+        setIsCartOpen(false);
+        navigate(`/product/buy/${id}`);
+    };
 
     const allProductsBuyingHandler = () => {
-        console.log(currentUser);
-        dispatch(updateCustomer(currentUser, currentUser._id));
-        setIsCartOpen(false)
-        navigate("/product/Checkout")
-    }
+        dispatch(updateCurrentUser(currentUser)); // Correct function usage
+        setIsCartOpen(false);
+        navigate("/product/Checkout");
+    };
 
     const priceContainerRef = useRef(null);
-
+    const firstCartItemRef = useRef(null);
 
     const handleScrollToBottom = () => {
         if (priceContainerRef.current) {
@@ -64,22 +56,24 @@ const Cart = ({ setIsCartOpen }) => {
         }
     };
 
-    const firstCartItemRef = useRef(null);
-
     const handleScrollToTop = () => {
         if (firstCartItemRef.current) {
             firstCartItemRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     };
+
     return (
         <StyledContainer>
             <TopContainer>
-                <LightPurpleButton onClick={() => {
-                    setIsCartOpen(false)
-                }}>
+                <Button 
+                    variant="contained" 
+                    color="secondary" 
+                    onClick={() => setIsCartOpen(false)}
+                    sx={{ backgroundColor: '#a68db5', color: 'white', '&:hover': { backgroundColor: '#8d6e9b' } }}
+                >
                     <KeyboardDoubleArrowLeftIcon /> Continue Shopping
-                </LightPurpleButton>
-                {cartDetails.length < 0 || (
+                </Button>
+                {cartDetails.length > 0 && (
                     <IconButton
                         sx={{ backgroundColor: "#3a3939", color: "white" }}
                         onClick={handleScrollToTop}
@@ -136,12 +130,13 @@ const Cart = ({ setIsCartOpen }) => {
                                         </Button>
                                     </ButtonContainer>
                                     <ButtonContainer>
-                                        <BasicButton
-                                            sx={{ mt: 2 }}
+                                        <Button
+                                            variant="outlined"
+                                            sx={{ mt: 2, backgroundColor: '#e0e0e0', color: 'black', '&:hover': { backgroundColor: '#c2c2c2' } }}
                                             onClick={() => productViewHandler(data._id)}
                                         >
                                             View
-                                        </BasicButton>
+                                        </Button>
                                         <Button
                                             variant="contained"
                                             color="success"
@@ -181,12 +176,13 @@ const Cart = ({ setIsCartOpen }) => {
                 </CardGrid>
             )}
 
-            {cartDetails.length > 0 || (
+            {cartDetails.length > 0 && (
                 <BottomContainer>
                     <Button
                         variant="contained"
                         color="success"
-                        onClick={handleScrollToBottom}>
+                        onClick={handleScrollToBottom}
+                    >
                         View Bill
                     </Button>
                     <Button
@@ -198,7 +194,6 @@ const Cart = ({ setIsCartOpen }) => {
                     </Button>
                 </BottomContainer>
             )}
-
         </StyledContainer>
     );
 };

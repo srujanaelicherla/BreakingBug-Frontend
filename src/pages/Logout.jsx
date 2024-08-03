@@ -16,10 +16,10 @@ const Logout = () => {
       console.log(currentUser);
       dispatch(updateCustomer(currentUser));
     }
-  }, [currentRole, currentUser, dispatch])
+  }, [currentRole, currentUser, dispatch]);
 
   const handleLogout = () => {
-   
+    dispatch(authLogout()); // Added logout dispatch here
     navigate('/');
   };
 

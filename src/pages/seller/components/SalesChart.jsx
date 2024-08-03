@@ -9,14 +9,12 @@ import {
 } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-
 import Chart from 'react-apexcharts';
 import { ChartDatabyYear } from '../../../utils/chartData';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
-const SalesChart = ({  }) => {
-
+const SalesChart = () => {
     const navigate = useNavigate();
 
     return (
@@ -40,7 +38,7 @@ const SalesChart = ({  }) => {
                 <ResponsiveChart
                     options={ChartDatabyYear.options}
                     series={ChartDatabyYear.series}
-                    type={type}
+                    type="line" // Ensure you specify the type, or remove this if not needed
                 />
             </CardContent>
 
@@ -67,9 +65,9 @@ const SalesChart = ({  }) => {
 export default SalesChart;
 
 const ResponsiveChart = styled(Chart)`
-    width: 550px;
+    width: 100%; // Changed to 100% for better responsiveness
 
     @media (max-width: 600px) {
-        width: 350px;
+        width: 100%; // Changed to 100% to ensure responsiveness on smaller screens
     }
 `;

@@ -13,13 +13,11 @@ import MenuItem from '@mui/material/MenuItem';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Login, Logout, Shop2, Store } from '@mui/icons-material';
-
 import { Link, useNavigate } from 'react-router-dom';
 import { Avatar, Badge, Divider, Drawer, ListItemIcon } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { styled } from 'styled-components';
 import { NavLogo } from '../utils/styles';
-
 import Cart from './customer/components/Cart';
 import Search from './customer/components/Search';
 import ProductsMenu from './customer/components/ProductsMenu';
@@ -27,18 +25,16 @@ import { updateCustomer } from '../redux/userHandle';
 
 const Navbar = () => {
     const { currentUser, currentRole } = useSelector(state => state.user);
+    const totalQuantity = currentUser?.cartDetails?.reduce((total, item) => total + item.quantity, 0) || 0;
 
-    const totalQuantity = currentUser && currentUser.cartDetails && 0;
-
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     React.useEffect(() => {
-        if (currentRole === "Customer") {
-            console.log(currentUser);
+        if (currentRole === "Customer" && currentUser) {
             dispatch(updateCustomer(currentUser, currentUser._id));
         }
-    }, [currentRole, currentUser, dispatch, ancorElNav])
+    }, [currentRole, currentUser, dispatch]);
 
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -49,60 +45,34 @@ const Navbar = () => {
 
     const [isCartOpen, setIsCartOpen] = React.useState(false);
 
-    // Cart
-    const handleOpen Cart = () => {
-        setIsCartOpen(true);
-    };
+    // Cart handlers
+    const handleOpenCart = () => setIsCartOpen(true);
+    const handleCloseCart = () => setIsCartOpen(false);
 
-    const handleOpenCart = () => {
-        setIsCartOpen(false);
-    };
+    // Navigation Menu handlers
+    const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
+    const handleCloseNavMenu = () => setAnchorElNav(null);
 
-    // Navigation Menu
-    const handleOpenNavMenu = (event) => {
-        setAnchorElNav(event.currentTarget);
-    };
+    // User Menu handlers
+    const handleOpenUserMenu = (event) => setAnchorElUser(event.currentTarget);
+    const handleCloseUserMenu = () => setAnchorElUser(null);
 
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
-    };
+    // Signin Menu handlers
+    const handleOpenSigninMenu = (event) => setAnchorElSign(event.currentTarget);
+    const handleCloseSigninMenu = () => setAnchorElSign(null);
 
-    // User Menu
-    const handleOpenUserMenu = (event) => {
-        setAnchorElUser(event.currentTarget);
-    };
-
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-    };
-
-    // Signin Menu
-    const handleOpenSigninMenu = (event) => {
-        setAnchorElSign(event.currentTarget);
-    };
-
-    const handleCloseSigninMenu = () => {
-        setAnchorElSign(null);
-    };
-
-    const homeHandler = () => {
-        navigate("/")
-    };
+    const homeHandler = () => navigate("/");
 
     return (
         <AppBar position="sticky">
             <Container maxWidth="xl" sx={{ backgroundColor: "#4d1c9c" }}>
                 <Toolbar disableGutters>
-
                     {/* MOBILE */}
-
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={() => { navigate("/Search") }}
+                            aria-label="search"
+                            onClick={() => navigate("/Search")}
                             color="inherit"
                         >
                             <SearchIcon />
@@ -154,31 +124,17 @@ const Navbar = () => {
                                 <Menu
                                     id="menu-appbar"
                                     anchorEl={anchorElNav}
-                                    anchorOrigin={{
-                                        vertical: 'bottom',
-                                        horizontal: 'left',
-                                    }}
+                                    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
                                     keepMounted
-                                    transformOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'left',
-                                    }}
+                                    transformOrigin={{ vertical: 'top', horizontal: 'left' }}
                                     open={Boolean(anchorElNav)}
-                                  
-                                    onClick={handleCloseUserMenu}
-                                    sx={{
-                                        display: { xs: 'block', md: 'none' },
-                                    }}
+                                    onClose={handleCloseNavMenu}
+                                    sx={{ display: { xs: 'block', md: 'none' } }}
                                 >
-                                    <MenuItem onClick={() => {
-                                      navigate("/Customerlogin")
-                                     }}>
+                                    <MenuItem onClick={() => navigate("/Customerlogin")}>
                                         <Typography textAlign="center">Sign in as customer</Typography>
                                     </MenuItem>
-                                    <MenuItem onClick={() => {
-                                        navigate("/Sellerlogin")
-                                        handleCloseNavMenu()
-                                    }}>
+                                    <MenuItem onClick={() => navigate("/Sellerlogin")}>
                                         <Typography textAlign="center">Sign in as seller</Typography>
                                     </MenuItem>
                                 </Menu>
@@ -187,7 +143,6 @@ const Navbar = () => {
                     }
 
                     {/* DESKTOP */}
-
                     <HomeContainer>
                         <Typography
                             variant="h6"
@@ -212,20 +167,19 @@ const Navbar = () => {
                                 onClick={homeHandler}
                             >
                                 <LocalMallIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-
                                 SHOPCART
                             </NavLogo>
                         </Typography>
                     </HomeContainer>
 
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, }}>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         <Search />
                         <ProductsMenu dropName="Categories" />
                         <ProductsMenu dropName="Products" />
                     </Box>
 
                     {currentRole === null &&
-                        <Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' }, }}>
+                        <Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>
                             <Button
                                 onClick={handleOpenSigninMenu}
                                 sx={{ my: 2, color: 'white', display: 'block' }}
@@ -237,7 +191,6 @@ const Navbar = () => {
                                 id="menu-appbar"
                                 open={openSign}
                                 onClose={handleCloseSigninMenu}
-                                onClick={handleCloseSigninMenu}
                                 PaperProps={{
                                     elevation: 0,
                                     sx: styles.styledPaper,
@@ -265,7 +218,6 @@ const Navbar = () => {
                     }
 
                     {/* BOTH */}
-
                     {currentRole === "Customer" &&
                         <Box sx={{ flexGrow: 0, display: 'flex' }}>
                             <Tooltip title="Cart">
@@ -294,7 +246,6 @@ const Navbar = () => {
                                 id="menu-appbar"
                                 open={open}
                                 onClose={handleCloseUserMenu}
-                                onClick={handleCloseUserMenu}
                                 PaperProps={{
                                     elevation: 0,
                                     sx: styles.styledPaper,
@@ -328,12 +279,10 @@ const Navbar = () => {
                             </Menu>
                         </Box>
                     }
-
                 </Toolbar>
             </Container>
 
-            {
-                isCartOpen &&
+            {isCartOpen &&
                 <Drawer
                     anchor="right"
                     open={isCartOpen}
@@ -350,14 +299,15 @@ const Navbar = () => {
                     <Cart setIsCartOpen={setIsCartOpen} />
                 </Drawer>
             }
-        </AppBar >
+        </AppBar>
     );
 }
+
 export default Navbar;
 
 const HomeContainer = styled.div`
   display: flex;
-  cursor:pointer;
+  cursor: pointer;
 `;
 
 const styles = {

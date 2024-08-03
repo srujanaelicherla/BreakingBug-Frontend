@@ -2,15 +2,11 @@ import { useEffect, useState } from 'react';
 import { Box, CircularProgress, Stack, TextField } from '@mui/material';
 import Popup from '../../../components/Popup';
 import { BlueButton } from '../../../utils/buttonStyles';
-import { useDispatch, useSelector } from 'react-redux';
-import { addStuff } from '../../../redux/userHandle';
+import { useSelector } from 'react-redux';
 import altImage from "../../../assets/altimg.png";
 import styled from 'styled-components';
 
 const AddProduct = () => {
-
-  const dispatch = useDispatch();
-
   const { currentUser, status, response, error } = useSelector(state => state.user);
 
   const [productName, setProductName] = useState("");
@@ -22,11 +18,11 @@ const AddProduct = () => {
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [tagline, setTagline] = useState("");
-  const seller = currentUser._id
-
   const [loader, setLoader] = useState(false);
   const [message, setMessage] = useState("");
   const [showPopup, setShowPopup] = useState(false);
+
+  const seller = currentUser._id;
 
   const fields = {
     productName,

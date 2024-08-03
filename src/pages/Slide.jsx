@@ -1,20 +1,18 @@
 import { Divider, Box, Typography, Button, styled, Container } from '@mui/material';
-
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router-dom'; // Updated import path
 import Carousel from 'react-multi-carousel';
 import "react-multi-carousel/lib/styles.css";
 
 const Slide = ({ products, title }) => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     return (
         <Component>
             <Deal>
                 <DealText>{title}</DealText>
-
                 <ViewAllButton
                     variant="contained"
-                    onClick={() => { navigate("/Products") }}
+                    onClick={() => navigate("/Products")}
                 >
                     View All
                 </ViewAllButton>
@@ -34,26 +32,25 @@ const Slide = ({ products, title }) => {
                 showDots={false}
                 containerClass="carousel-container"
                 dotListClass="custom-dot-list-style"
-                itemClass="carousel-item-padding-40-px">
-                {
-                    products.map((product, index) => (
-                        <Link key={index} to={`/product/view/${product._id}`} style={{ textDecoration: 'none' }}>
-                            <Box textAlign="center" style={{ padding: '25px 15px' }}>
-                                <Image src={product.productImage} />
-                                <TitleText style={{ fontWeight: 600, color: '#212121' }}>{product.productName}</TitleText>
-                                <TextContainer>
-                                    <Text style={{ color: '#525050', textDecoration: "line-through" }}>{product.price.mrp}</Text>
-                                    <Text>₹{product.price.cost}</Text>
-                                    <Text style={{ color: 'green' }}>{product.price.discountPercent}</Text>
-                                </TextContainer>
-                                <Text style={{ color: '#212121', opacity: '.6' }}>{product.tagline}</Text>
-                            </Box>
-                        </Link>
-                    ))
-                }
+                itemClass="carousel-item-padding-40-px"
+            >
+                {products.map((product, index) => (
+                    <Link key={index} to={`/product/view/${product._id}`} style={{ textDecoration: 'none' }}>
+                        <Box textAlign="center" sx={{ padding: '25px 15px' }}>
+                            <Image src={product.productImage} alt={product.productName} />
+                            <TitleText>{product.productName}</TitleText>
+                            <TextContainer>
+                                <Text sx={{ color: '#525050', textDecoration: 'line-through' }}>{product.price.mrp}</Text>
+                                <Text>₹{product.price.cost}</Text>
+                                <Text sx={{ color: 'green' }}>{product.price.discountPercent}</Text>
+                            </TextContainer>
+                            <Text sx={{ color: '#212121', opacity: 0.6 }}>{product.tagline}</Text>
+                        </Box>
+                    </Link>
+                ))}
             </Carousel>
         </Component>
-    )
+    );
 }
 
 export default Slide;
@@ -81,14 +78,15 @@ const Component = styled(Box)`
 const Deal = styled(Box)`
     display: flex;    
     padding: 15px 20px;
-`
+    align-items: center; /* Ensure items are vertically centered */
+`;
 
 const DealText = styled(Typography)`
     font-size: 22px;
     font-weight: 600;
     line-height: 32px;
     margin-right: 25px;
-`
+`;
 
 const ViewAllButton = styled(Button)`
     margin-left: auto;
@@ -103,7 +101,7 @@ const ViewAllButton = styled(Button)`
 const Image = styled('img')({
     width: 'auto',
     height: 150
-})
+});
 
 const TitleText = styled(Typography)`
     font-size: 14px;
@@ -115,8 +113,8 @@ const TitleText = styled(Typography)`
 
 const Text = styled(Typography)`
     font-size: 14px;
-    margin-top: 5px
-`
+    margin-top: 5px;
+`;
 
 const TextContainer = styled(Container)`
     display: flex;
@@ -124,4 +122,5 @@ const TextContainer = styled(Container)`
     justify-content: center;
     align-items: center;
     margin: 8px;
+    padding: 0; /* Remove default padding */
 `;

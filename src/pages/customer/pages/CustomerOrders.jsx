@@ -14,10 +14,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getSpecificProducts } from '../../../redux/userHandle';
 
 const CustomerOrders = () => {
-
-    const dispatch = useDispatch()
-
-    const { currentUser, loading, responseSpecificProducts } = useSelector(state => state.user);
+    const dispatch = useDispatch();
+    const { loading, responseSpecificProducts } = useSelector(state => state.user);
 
     useEffect(() => {
         dispatch(getSpecificProducts("getOrderedProductsByCustomer"));
@@ -44,23 +42,25 @@ const CustomerOrders = () => {
         handleClose();
     };
 
+    const specificProductData = responseSpecificProducts ? responseSpecificProducts.data : []; // Assuming responseSpecificProducts has a data property
+
     return (
         <>
-            {loading ?
-                <h1>
+            {loading ? (
+                <Typography variant="h4" align="center">
                     Loading...
-                </h1>
-                :
-                <>
-                    {responseSpecificProducts ?
-                        <h1>
+                </Typography>
+            ) : (
+                <Container>
+                    <Typography variant="h4" align="center" sx={{ mb: 3 }}>
+                        My Orders
+                    </Typography>
+                    {specificProductData.length === 0 ? (
+                        <Typography variant="h6" align="center">
                             No Orders Till Now
-                        </h1>
-                        :
-                        <Container>
-                            <Typography sx={{ fontSize: 40, textAlign: "center" }}>
-                                My Orders
-                            </Typography>
+                        </Typography>
+                    ) : (
+                        <>
                             <Stack
                                 direction="row"
                                 alignItems="center"
@@ -82,18 +82,14 @@ const CustomerOrders = () => {
                                     </Button>
 
                                     <Menu
-                                        open={!!open}
+                                        open={Boolean(open)}
                                         anchorEl={open}
                                         onClose={handleClose}
                                         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                                         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                                        slotProps={{
-                                            paper: {
-                                                sx: {
-                                                    [`& .${listClasses.root}`]: {
-                                                        p: 0,
-                                                    },
-                                                },
+                                        sx={{
+                                            [`& .${listClasses.root}`]: {
+                                                p: 0,
                                             },
                                         }}
                                     >
@@ -111,19 +107,18 @@ const CustomerOrders = () => {
                             </Stack>
 
                             <Grid container spacing={3}>
-                                {specificProductData && specificProductData.map((product, index) => (
-                                    <Grid key={index} xs={12} sm={6} md={3}>
+                                {specificProductData.map((product, index) => (
+                                    <Grid item key={index} xs={12} sm={6} md={3}>
                                         <ProductCard product={product} />
                                     </Grid>
                                 ))}
                             </Grid>
-
-                        </Container>
-                    }
-                </>
-            }
+                        </>
+                    )}
+                </Container>
+            )}
         </>
     );
-}
+};
 
-export default CustomerOrders
+export default CustomerOrders;

@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import jwtDecode from 'jwt-decode';
 
 const initialState = {
     status: 'idle',
@@ -117,18 +116,12 @@ const userSlice = createSlice({
 
             updateCartDetailsInLocalStorage(state.currentUser.cartDetails);
         },
-
         removeSpecificProduct: (state, action) => {
             const productIdToRemove = action.payload;
             state.currentUser.cartDetails = state.currentUser.cartDetails.filter(
-              (cartItem) => cartItem._id !== productIdToRemove
-
+                (cartItem) => cartItem._id !== productIdToRemove
             );
-
-            
-          },
-        
-
+        },
         fetchProductDetailsFromCart: (state, action) => {
             const productIdToFetch = action.payload;
             const productInCart = state.currentUser.cartDetails.find(
@@ -141,12 +134,10 @@ const userSlice = createSlice({
                 state.productDetailsCart = null;
             }
         },
-
         removeAllFromCart: (state) => {
             state.currentUser.cartDetails = [];
             updateCartDetailsInLocalStorage([]);
         },
-
         authFailed: (state, action) => {
             state.status = 'failed';
             state.response = action.payload;
@@ -168,10 +159,9 @@ const userSlice = createSlice({
             state.response = true;
             state.isLoggedIn = false;
         },
-
         isTokenValid: (state) => {
-            const decodedToken = jwtDecode(state.currentToken);
-            if (state.currentToken) {              state.isLoggedIn = true;
+            if (state.currentToken) {
+                state.isLoggedIn = true;
             } else {
                 localStorage.removeItem('user');
                 state.currentUser = null;
@@ -183,7 +173,7 @@ const userSlice = createSlice({
                 state.isLoggedIn = false;
             }
         },
-
+        
         getRequest: (state) => {
             state.loading = true;
         },
@@ -196,14 +186,12 @@ const userSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },
-
         getDeleteSuccess: (state) => {
             state.status = 'deleted';
             state.loading = false;
             state.error = null;
             state.response = null;
         },
-
         productSuccess: (state, action) => {
             state.productData = action.payload;
             state.responseProducts = null;
@@ -215,7 +203,6 @@ const userSlice = createSlice({
             state.loading = false;
             state.error = null;
         },
-
         sellerProductSuccess: (state, action) => {
             state.sellerProductData = action.payload;
             state.responseSellerProducts = null;
@@ -227,7 +214,6 @@ const userSlice = createSlice({
             state.loading = false;
             state.error = null;
         },
-
         specificProductSuccess: (state, action) => {
             state.specificProductData = action.payload;
             state.responseSpecificProducts = null;
@@ -239,7 +225,6 @@ const userSlice = createSlice({
             state.loading = false;
             state.error = null;
         },
-
         productDetailsSuccess: (state, action) => {
             state.productDetails = action.payload;
             state.responseDetails = null;
@@ -251,20 +236,17 @@ const userSlice = createSlice({
             state.loading = false;
             state.error = null;
         },
-
         customersListSuccess: (state, action) => {
             state.customersList = action.payload;
             state.responseCustomersList = null;
             state.loading = false;
             state.error = null;
         },
-
         getCustomersListFailed: (state, action) => {
             state.responseCustomersList = action.payload;
             state.loading = false;
             state.error = null;
         },
-
         setFilteredProducts: (state, action) => {
             state.filteredProducts = action.payload;
             state.responseSearch = null;
@@ -290,7 +272,6 @@ export const {
     authError,
     authLogout,
     isTokenValid,
-    doneSuccess,
     getDeleteSuccess,
     getRequest,
     productSuccess,
@@ -311,7 +292,6 @@ export const {
     removeAllFromCart,
     fetchProductDetailsFromCart,
     updateCurrentUser,
-    
 } = userSlice.actions;
 
 export const userReducer = userSlice.reducer;
